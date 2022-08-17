@@ -1,5 +1,5 @@
 from pygame import*
-import play
+from random import randint
 
 class GameSprite(sprite.Sprite): #class GameSprite ke thua Sprite co san trong pygame
     def __init__(self, player_image, player_x, player_y, play_speed):#nhan vat, toa do x, y, speed
@@ -36,8 +36,9 @@ class Computer(GameSprite):
             self.rect.y += self.speed            
 
 class Ball(GameSprite): #inheritance gamesprite
+    
     def update(self):
-        global player_score
+        
         self.rect.y += self.speed_y
         self.rect.x += self.speed_x
         
@@ -47,8 +48,28 @@ class Ball(GameSprite): #inheritance gamesprite
 
         if self.rect.x < 0 or self.rect.x > win_width - self.rect.width:
             self.speed_x *=-1 
-        #if self.rect == player.rect:
-        #    player_score +=1 
+#
+    # def cnt(self):
+    #     global player_score, com_score
+    #     if self.rect.x < 0:
+    #         com_score += 1
+        
+    #     if self.rect.x > win_width:
+    #         player_score +=1
+
+
+        # if self.rect == player.rect:
+        #     player_score +=1 
+
+        # if self.rect == com.rect:
+        #     com_score += 1
+
+    # def count(self):
+    #     if self.rect.x <= 0: #and self.rect.y == player.rect.y:
+    #         player_score +=1 
+    #     if self.rect.x >= win_width: #and self.rect.y == com.rect.y:
+    #         com_score += 1
+
     
 
 #Size
@@ -109,25 +130,28 @@ while run:
         window.blit(cscore_txt, (600, 5))
 
         
-        if sprite.collide_rect(ball, player):
+        if sprite.collide_rect(ball, player) and not player.rect.contains(ball.rect):
             ball.speed_x *=-1
-                     
-            
+            #ball.speed_y *=-1
+
+  
+            #ball.count()
+        
             player_score += 1 
             #print(player_score)
         
-            
-
-        if sprite.collide_rect(ball, com):
+        if sprite.collide_rect(ball, com) and not com.rect.contains(ball.rect):
             ball.speed_x *=-1
+            #ball.speed_y *=-1
+
+
+            #ball.count()
             
             com_score += 1
             #com_score = com_score +1 - com_score
             
 
         
-        
-
-        clock.tick(200)
+        clock.tick(60)
 
     display.update()
