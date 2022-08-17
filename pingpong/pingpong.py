@@ -86,6 +86,8 @@ xx = 120
 yy = 120
 player = Player("paddle.png", 5, win_height - 300, 20)#tao nhan vat, x, y, toc do
 com = Computer("paddle2.png", 850, win_height - 300, 20)
+
+
 xx = 50
 yy = 50
 
@@ -97,6 +99,10 @@ clock = time.Clock()
 font.init()
 font = font.Font("Roboto-Bold.ttf", 50) 
 
+#Mask
+ball_mask = mask.from_surface(ball.image)
+player_mask = mask.from_surface(player.image)
+com_mask = mask.from_surface(com.image)
 
 #Run
 
@@ -130,7 +136,11 @@ while run:
         window.blit(cscore_txt, (600, 5))
 
         
-        if sprite.collide_rect(ball, player) and not player.rect.contains(ball.rect):
+        if sprite.collide_rect(ball, player):
+            if ball_mask.overlap(player_mask, (1,1)):
+                ball.rect.x = max(0, ball.rect.x - ball_mask.overlap(player_mask, (1,1))[0])
+                ball.rect.y = ball.rect.y - ball_mask.overlap(player_mask, (1,1))[1]
+
             ball.speed_x *=-1
             #ball.speed_y *=-1
 
@@ -140,7 +150,11 @@ while run:
             player_score += 1 
             #print(player_score)
         
-        if sprite.collide_rect(ball, com) and not com.rect.contains(ball.rect):
+        if sprite.collide_rect(ball, com):
+            if ball_mask.overlap(com_mask, (1,1)):
+                ball.rect.x = min(0, ball.rect.x + ball_mask.overlap(com_mask, (1,1))[0], win_width - 50)
+                ball.rect.y = ball.rect.y - ball_mask.overlap(com_mask, (1,1))[1]
+
             ball.speed_x *=-1
             #ball.speed_y *=-1
 
