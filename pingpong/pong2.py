@@ -118,13 +118,14 @@ bw = font.render("Player B wins!", True, (0, 0, 204))
 #Run
 
 player_score = 0
-score_txt = font.render(f"Score: {player_score}", True, (87, 17, 17))
+score_txt = font.render(f"Score: {player_score}", True, (255, 255, 0))
 
 com_score = 0
-cscore_txt = font.render(f"Score: {com_score}", True, (87, 17, 17))
+cscore_txt = font.render(f"Score: {com_score}", True, (255, 255, 0))
 run = True
-finish = True
-intro = True
+finish = False
+
+rect = Rect(win_width/2, 0, 20, win_height)
 while run:
     
     for e in event.get():
@@ -133,27 +134,18 @@ while run:
         if e.type == KEYDOWN:
             if e.key == K_SPACE:
                 finish = False
-                intro = False
                 player_score = 0
                 com_score = 0
                 ball.rect.x =  win_width/2
                 ball.rect.y = win_height/2
-           
 
         
 
-    if intro:
-        window.fill((0,0,0))
-        aaa = font.render("Press SPACE to play Ping Pong game!", True, (255, 204, 229))
-        window.blit(aaa, (70, 150))
 
-        aa = font.render("A: use arrow keys to move", True, (255, 204, 229))
-        window.blit(aa, (70, 250))
-        a = font.render("B: use W, S to move", True, (255, 204, 229))
-        window.blit(a, (70, 350))
     if not finish:
         window.blit(background, (0,0)) #set background
-        
+        window.fill((0,0,0))
+        draw.rect(window, (128,128,128), rect)
         ball.draw()
         ball.update()
 
@@ -163,10 +155,10 @@ while run:
         com.draw()
         com.update()
 
-        score_txt = font.render(f"A Score: {player_score}", True, (87, 17, 17))
+        score_txt = font.render(f"A Score: {player_score}", True, (255, 255, 0))
         window.blit(score_txt, (150, 5))
 
-        cscore_txt = font.render(f"B Score: {com_score}", True, (87, 17, 17))
+        cscore_txt = font.render(f"B Score: {com_score}", True, (0, 153, 0))
         window.blit(cscore_txt, (600, 5))
 
         
