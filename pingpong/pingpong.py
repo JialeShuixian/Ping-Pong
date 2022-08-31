@@ -1,5 +1,5 @@
 from pygame import*
-from random import randint
+
 
 class GameSprite(sprite.Sprite): #class GameSprite ke thua Sprite co san trong pygame
     def __init__(self, player_image, player_x, player_y, play_speed):#nhan vat, toa do x, y, speed
@@ -28,12 +28,28 @@ class Player(GameSprite):
 class Computer(GameSprite):
 
     def update(self):
+        global ball
+        # keys = key.get_pressed()
+        # if keys[K_w] and self.rect.y > 5:
+        #     self.rect.y -= self.speed
+    
+        # if keys[K_s] and self.rect.y < win_height - 80:
+        #     self.rect.y += self.speed            
+        
+        # if ball.rect.x >= 800:
+        #     self.rect.y = ball.rect.y
+        if ball.rect.y > self.rect.y:
+            self.rect.y += self.speed
+        if ball.rect.y < self.rect.y:
+            self.rect.y -= self.speed       
+
+    def update2(self):
         keys = key.get_pressed()
         if keys[K_w] and self.rect.y > 5:
             self.rect.y -= self.speed
     
         if keys[K_s] and self.rect.y < win_height - 80:
-            self.rect.y += self.speed            
+            self.rect.y += self.speed   
 
 class Ball(GameSprite): #inheritance gamesprite
     
@@ -99,7 +115,7 @@ background = transform.scale(image.load("C:/Users/Admin/Documents/Ping-Pong/ping
 xx = 120
 yy = 120
 player = Player("paddle.png", 5, win_height - 300, 20)#tao nhan vat, x, y, toc do
-com = Computer("paddle2.png", 850, win_height - 300, 20)
+com = Computer("paddle2.png", 850, win_height - 300, 10)
 
 
 xx = 50
@@ -125,6 +141,7 @@ cscore_txt = font.render(f"Score: {com_score}", True, (87, 17, 17))
 run = True
 finish = True
 intro = True
+tplayers = True
 while run:
     
     for e in event.get():
@@ -134,23 +151,77 @@ while run:
             if e.key == K_SPACE:
                 finish = False
                 intro = False
+                tplayers = False
                 player_score = 0
                 com_score = 0
                 ball.rect.x =  win_width/2
                 ball.rect.y = win_height/2
-           
+            if e.key == K_LEFT:
+                tplayers = True
+                intro = False
+#2 players
+    if tplayers:
+        window.blit(background, (0,0)) #set background
+        
+        ball.draw()
+        ball.update()
+
+        player.draw()
+        player.update()
+
+        com.draw()
+        com.update2()
+
+        score_txt = font.render(f"A Score: {player_score}", True, (87, 17, 17))
+        window.blit(score_txt, (150, 5))
+
+        cscore_txt = font.render(f"B Score: {com_score}", True, (87, 17, 17))
+        window.blit(cscore_txt, (600, 5))
+
+        
+        if sprite.collide_rect(ball, player):
+            ball.speed_x *=-1
+        
+            #print(player_score)
+        
+        if sprite.collide_rect(ball, com):
+            ball.speed_x *=-1
+
+
+        a = ball.update()
+        if a == 1:
+            com_score +=1
+        elif a == 2:
+            player_score +=1
+
+#           WIN
+        if player_score >= 11:
+            window.blit(aw, (150, win_height/2))
+            finish = True
+
+        if com_score >= 11:
+            window.blit(bw, (win_width/2, win_height/2))     
+            finish = True
+            
+
+        
+        clock.tick(60)
 
         
 
     if intro:
         window.fill((0,0,0))
-        aaa = font.render("Press SPACE to play Ping Pong game!", True, (255, 204, 229))
+        aaa = font.render("Press SPACE to play 1 player!", True, (255, 204, 229))
         window.blit(aaa, (70, 150))
 
+        aaa1 = font.render("Press LEFT to play 2 players!", True, (255, 204, 229))
+        window.blit(aaa1, (70, 250))
+
         aa = font.render("A: use arrow keys to move", True, (255, 204, 229))
-        window.blit(aa, (70, 250))
+        window.blit(aa, (70, 350))
         a = font.render("B: use W, S to move", True, (255, 204, 229))
-        window.blit(a, (70, 350))
+        window.blit(a, (70, 450))
+#1 player
     if not finish:
         window.blit(background, (0,0)) #set background
         
